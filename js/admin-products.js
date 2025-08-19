@@ -43,51 +43,103 @@ const games = [
         category: "Role-playing",
         description: "A tactical role-playing game set in the Garreg Mach Monastery, where players lead one of three houses in a battle for the future of Fódlan.",
         createdAt: "2023-10-05T12:00:00Z"
+    },
+    {
+        id: 6,
+        name: "The Witcher 3: Wild Hunt",
+        image:
+        "https://juegosdigitalesargentina.com/files/images/productos/1618591872-the-witcher-3-wild-hunt-complete-edition-ps5.jpg",
+        price: 49.99,
+        category: "RPG",
+        description:
+        "An open-world RPG that follows Geralt of Rivia as he searches for his adopted daughter while battling monsters and engaging in political intrigue.",
+        createdAt: "2023-10-04T12:00:00Z",
+    },
+    {
+        id: 7,
+        name: "God of War Ragnarok",
+        image:
+        "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2322010/capsule_616x353.jpg?t=1750909504",
+        price: 99.99,
+        category: "Action",
+        description:
+        "An action-adventure game that follows Kratos and his son Atreus as they journey through the world of Norse mythology.",
+        createdAt: "2023-10-03T12:00:00Z",
+    },
+    {
+        id: 8,
+        name: "Spider Man 2",
+        image:
+        "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2651280/cb8da9b3e99cf7362cd88c10a0544b7fe892ccad/capsule_616x353.jpg?t=1750954033",
+        price: 39.99,
+        category: "Adventure",
+        description:
+        "An action-adventure game where players control both Peter Parker and Miles Morales as they fight against various villains in New York City.",
+        createdAt: "2023-10-05T12:00:00Z",
     }
 ];
 
+const gamesForm = document.getElementById("gamesForm");
+
 const tableBody = document.getElementById("tableBody");
 
-games.forEach((juego) => {
-    tableBody.innerHTML += `<tr>
-    <td class="cell-image"> 
-        <img src="${juego.image}" alt="Imagen del producto"/>
-    </td>
-    <td class="cell-name">${juego.name}</td>
-    <td class="cell-category">${juego.category}</td>
-    <td class="cell-price">${juego.price}</td>
-    <td class="cell-date">${new Date(juego.createdAt).toLocaleDateString()}</td>
-    <td class="cell-actions">
-        <button class="btn btn-primary btn-sm">
-            <i class="fa-solid fa-pencil"></i>
-        </button>
-        <button class="btn btn-danger btn-sm">
-            <i class="fa-solid fa-trash"></i>
-        </button>
-    </td>
-    </tr>`;
+gamesForm.addEventListener("submit", (event) => {
+    //Lo primero que hacemos es prevenir el comportamiento por defecto del formulario
+    event.preventDefault();
+
+    const el = event.target.elements;
+    const newGame = {
+        id: Date.now(), // Generamos un ID único basado en la fecha actual
+        name: el.name.value,
+        image: el.image.value,
+        price: parseFloat(el.price.value), // Convertimos el precio a un número flotante
+        category: el.category.value,
+        description: el.description.value,
+        createdAt: new Date().toISOString() // Fecha actual en formato ISO
+    };
+
+    // Agregamos el nuevo juego al array de juegos
+    games.push(newGame);
+
+    // Vuelvo a iterear el array de juegos para actualizar la tabla
+    buildTable(games);
+
 })
 
-/*
-games.forEach(game => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
+function buildTable(arrayJuegos) {
+    tableBody.innerHTML = ""; // Limpiamos el contenido de la tabla
+    arrayJuegos.forEach((juego) => {
+        tableBody.innerHTML += `<tr>
         <td class="cell-image"> 
-            <img src="${game.image}" alt="Imagen del producto"/>
+            <img src="${juego.image}" alt="Imagen del producto"/>
         </td>
-        <td class="cell-name">${game.name}</td>
-        <td class="cell-category">${game.category}</td>
-        <td class="cell-price">${game.price.toFixed(2)}</td>
-        <td class="cell-date">${new Date(game.createdAt).toLocaleDateString()}</td>
+        <td class="cell-name">${juego.name}</td>
+        <td class="cell-category">${juego.category}</td>
+        <td class="cell-price">$ ${juego.price}</td>
+        <td class="cell-date">${new Date(juego.createdAt).toLocaleDateString()}</td>
         <td class="cell-actions">
             <button class="btn btn-primary btn-sm">
                 <i class="fa-solid fa-pencil"></i>
             </button>
-            <button class="btn btn-danger btn-sm">
+            <button class="btn btn-danger btn-sm" onclick="deleteGame(${juego.id})">
                 <i class="fa-solid fa-trash"></i>
             </button>
         </td>
-    `;
-    tableBody.appendChild(row);
-});
-*/
+        </tr>`;
+    });
+}
+
+function deleteGame(id) {
+    // Debería conocer el id del juego a eliminar
+  // Vamos a obtener el índice del juego en el array
+  const indice = games.findIndex(juego => {
+    return juego.id === id;
+  })
+
+  // Eliminar el juego del array
+  games.splice(indice, 1);
+
+  buildTable(games);
+}
+
+buildTable(games); // Llamamos a la función para construir la tabla al cargar el script

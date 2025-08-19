@@ -76,12 +76,72 @@
 
         <!-- !div del formulario-->
         <div class="col-12 col-lg-4">
-          FORMULARIO
+
+          <form id="gamesForm" class="py-3 px-5">
+
+            <div class="mb-3">
+              <label for="title" class="form-label">Titulo del juego</label>
+              <input type="text" class="form-control" id="title" name="name" placeholder="Ej. GTA V"
+              required minlength="2" maxlength="80" value="Titulo de prueba">
+            </div>
+
+            <div class="mb-3 row">
+              <div class="col-6">
+                <label for="price" class="form-label">Precio</label>
+                <input type="number" class="form-control" id="price" name="price" placeholder="Ej. 59.99"
+                required min="0" step="0.01" value="20">
+              </div>
+
+              <div class="col-6">
+                <label class="form-label p-2">Categoria
+                  <select name="category" class="form-select" required>
+                    <option value="action">Acción</option>
+                    <option value="adventure">Aventura</option>
+                    <option value="strategy">Estrategia</option>
+                    <option value="simulation">Simulación</option>
+                    <option value="sports">Deportes</option>
+                    <option value="rpg">RPG</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label for="image" class="form-label">URL de la imagen</label>
+              <input type="url" 
+                     class="form-control"
+                     id="image"
+                     name="image"
+                     placeholder="Ej. https://misitio.com/imagen.jpg"
+                     value="https://picsum.photos/100/100"
+              required> 
+            </div>
+
+            <div class="mb-3">
+              <label for="description" class="form-label">Descripción</label>
+              <textarea class="form-control" 
+                        id="description" 
+                        placeholder="Ej. Juego de acción y aventura en mundo abierto..."
+                        name="description" 
+                        rows="5"
+                        required
+                        minlength="20"
+                        maxlength="500"
+              >Descripción de prueba para checkear la carga de mis JS</textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Cargar</button>
+          </form>
+
         </div>
 
         <!-- !div de filtros y tabla de productos-->
           <div class="col-12 col-lg-8">
             <div class="row p-4">FILTROS</div>
+
+
+
+
 
             <div class="table-container p-4">
               <table class="table table-admin">
