@@ -1,0 +1,41 @@
+.table-admin{
+    width: 100%;
+
+    /* tdo el contenido de las celdas en el medio*/
+    td{
+        vertical-align: middle;
+    }
+
+    .cell-image {
+        padding: .5rem;
+
+        img{
+
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+    }
+
+    .cell-name {
+        font-weight: bold;
+    }   
+
+    .cell-price{
+        font-weight: 680;
+        vertical-align: middle;
+    }
+
+    .cell-actions {
+        text-align: center;
+
+        .btn{
+            padding: .25rem .125rem;
+        }
+
+        button:not(:last-child) {
+            margin-right: .25rem;
+        }
+    }
+}

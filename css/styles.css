@@ -10,7 +10,7 @@ main {
 }
 
 .main-header {
-  position: sticky;
+  position: sticky; /*queda pegado*/
   top: 0;
   z-index: 100;
 }

@@ -23,8 +23,13 @@
 
     <!-- Estilos personalizados-->
      <link rel="stylesheet" href="/css/styles.css">
+     <link rel="stylesheet" href="/css/table.css">
 
      <title>Admin Products</title>
+
+     <!-- Scripts JS perdonalizados -->
+      <!-- !defer: hasta que no termina el body, no se ejecuta -->
+      <script src="/js/admin-products.js" defer></script>
 </head>
 <body>
      <!--Header o cabecera con su navbar-->
@@ -61,9 +66,49 @@
         </div>
       </nav>
     </header>
-    <h1>Administrador Productos</h1>
+    
+    
+    <main class="container-xl p-0 overflow-hidden">
 
-    <main class="main-container"></main>
+      <h1 class="main-title">Administrador Productos</h1>
+      <!-- !row de productos -->
+      <div class="row">
+
+        <!-- !div del formulario-->
+        <div class="col-12 col-lg-4">
+          FORMULARIO
+        </div>
+
+        <!-- !div de filtros y tabla de productos-->
+          <div class="col-12 col-lg-8">
+            <div class="row p-4">FILTROS</div>
+
+            <div class="table-container p-4">
+              <table class="table table-admin">
+                <!--! CABECERA -->
+                 <thead>
+                  <tr>
+                    <th>Imagen</th>
+                    <th>Titulo</th>
+                    <th>Categoria</th>
+                    <th>Precio</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th>
+                  </tr>
+                 </thead>
+                <!--! CUERPO-->
+                 <tbody id="tableBody">
+                  
+                 </tbody>
+              </table>
+            </div>
+
+          </div>
+
+      </div>
+      
+
+    </main>
 
     <!-- Footer -->
       <footer class="main-footer container-fluid">
