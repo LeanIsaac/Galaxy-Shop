@@ -21,9 +21,13 @@
     integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ==" 
     crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- Estilos personalizados-->
      <link rel="stylesheet" href="/css/styles.css">
      <link rel="stylesheet" href="/css/table.css">
+     <link rel="stylesheet" href="/css/form.css">
 
      <title>Admin Products</title>
 
@@ -77,7 +81,7 @@
         <!-- !div del formulario-->
         <div class="col-12 col-lg-4">
 
-          <form id="gamesForm" class="py-3 px-5">
+          <form id="gamesForm" class="py-3 px-5 admin-form">
 
             <div class="mb-3">
               <label for="title" class="form-label">Titulo del juego</label>
@@ -137,7 +141,44 @@
 
         <!-- !div de filtros y tabla de productos-->
           <div class="col-12 col-lg-8">
-            <div class="row p-4">FILTROS</div>
+
+            <div class="row p-4 gx-3">
+
+              <div class="col-5">
+                <input type="text" placeholder="Buscar juego..."
+                class="form-control" id="searchInput">
+              </div>
+              <div class="col-3">
+                <select id="categoryFilter" class="form-select">
+
+                  <option value="all">Todas las categorías</option>
+
+                  <option value="action">Acción</option>
+                  <option value="adventure">Aventura</option>
+                  <option value="strategy">Estrategia</option>
+                  <option value="simulation">Simulación</option>
+                  <option value="sports">Deportes</option>
+                  <option value="rpg">RPG</option>
+                  <option value="role-playing">Rol</option>
+                </select>
+              </div>
+              
+           <div class="col-3">
+              
+              <button class="btn btn-sm btn-primary" data-order="asc">
+                <i class="fa-solid fa-caret-up"></i>
+              </button>
+
+              <button class="btn btn-sm btn-primary" data-order="desc">
+                <i class="fa-solid fa-caret-down"></i>
+              </button>
+
+              <button class="btn btn-sm btn-secondary" data-order="reset">
+                <i class="fa-solid fa-arrows-rotate"></i>
+              </button>
+
+            </div>
+          </div>
 
 
 
@@ -166,9 +207,28 @@
           </div>
 
       </div>
-      
+      <!-- Fin del row de productos -->
 
     </main>
+
+    <!-- Modal -->
+    <div class="modal fade" id="gameDetail" tabindex="-1" aria-labelledby="gameDetailLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="title">Modal title</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            ...
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Footer -->
       <footer class="main-footer container-fluid">

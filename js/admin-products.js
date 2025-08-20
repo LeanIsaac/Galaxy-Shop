@@ -13,7 +13,7 @@ const games = [
         name: "Super Mario Odyssey",
         image: "https://m.media-amazon.com/images/I/61sv4VFKgJL._SL1000_.jpg",
         price: 49.99,
-        category: "Platformer",
+        category: "Adventure",
         description: "A 3D platformer where Mario travels across various kingdoms to rescue Princess Peach from Bowser.",
         createdAt: "2023-10-02T12:00:00Z"
     },
@@ -31,7 +31,7 @@ const games = [
         name: "Splatoon 2",
         image: "https://upload.wikimedia.org/wikipedia/en/thumb/4/49/Splatoon_2.jpg/250px-Splatoon_2.jpg",
         price: 39.99,
-        category: "Shooter",
+        category: "Action",
         description: "A colorful third-person shooter where players control Inklings to compete in turf wars.",
         createdAt: "2023-10-04T12:00:00Z"
     },
@@ -78,10 +78,14 @@ const games = [
         createdAt: "2023-10-05T12:00:00Z",
     }
 ];
-
+// Obtenemos elementos del DOM
 const gamesForm = document.getElementById("gamesForm");
-
 const tableBody = document.getElementById("tableBody");
+
+const searchInput = document.querySelector("#searchInput");
+const categorySelect = document.querySelector("#categoryFilter");
+
+const sortBtns = document.querySelectorAll("[data-order]");
 
 gamesForm.addEventListener("submit", (event) => {
     //Lo primero que hacemos es prevenir el comportamiento por defecto del formulario
@@ -101,6 +105,16 @@ gamesForm.addEventListener("submit", (event) => {
     // Agregamos el nuevo juego al array de juegos
     games.push(newGame);
 
+    Swal.fire({
+        icon:"success",
+        title: "Carga exitosa",
+        text: "El juego se ha agregado correctamente.",
+        position: "top-end",
+        toast: true,
+        showConfirmButton: false,
+        theme: "dark",
+        timer: 2500
+    })
     // Vuelvo a iterear el array de juegos para actualizar la tabla
     buildTable(games);
 
@@ -108,12 +122,26 @@ gamesForm.addEventListener("submit", (event) => {
 
 function buildTable(arrayJuegos) {
     tableBody.innerHTML = ""; // Limpiamos el contenido de la tabla
+
+    if(arrayJuegos.length === 0) {
+        tableBody.innerHTML = `<tr>
+        <td colspan="6" class="text-center p-4">
+            <h3 class="text-secondary">No se encontraron juegos disponibles</h3>
+            </td>
+        </tr>`;
+        return; //Salir de la funcion si no  hay juegos
+    }
+
     arrayJuegos.forEach((juego) => {
         tableBody.innerHTML += `<tr>
         <td class="cell-image"> 
             <img src="${juego.image}" alt="Imagen del producto"/>
         </td>
-        <td class="cell-name">${juego.name}</td>
+
+        <td class="cell-name">
+            <span onclick="showDialog(${juego.id})">  ${juego.name} </span>
+        </td>
+
         <td class="cell-category">${juego.category}</td>
         <td class="cell-price">$ ${juego.price}</td>
         <td class="cell-date">${new Date(juego.createdAt).toLocaleDateString()}</td>
@@ -130,16 +158,108 @@ function buildTable(arrayJuegos) {
 }
 
 function deleteGame(id) {
+  const isConfirmed = confirm("¿Estás seguro de eliminar el juego?");
+
+  if (isConfirmed) {
     // Debería conocer el id del juego a eliminar
-  // Vamos a obtener el índice del juego en el array
-  const indice = games.findIndex(juego => {
-    return juego.id === id;
-  })
+    // Vamos a obtener el índice del juego en el array
+    const indice = games.findIndex((juego) => {
+      return juego.id === id;
+    });
 
-  // Eliminar el juego del array
-  games.splice(indice, 1);
-
-  buildTable(games);
+    // Eliminar el juego del array
+    games.splice(indice, 1);
+    
+    buildTable(games);
+  }
 }
 
-buildTable(games); // Llamamos a la función para construir la tabla al cargar el script
+// Llamamos a la función para construir la tabla al cargar el script
+buildTable(games); 
+
+// #filtros
+// #cuando el user escriba en el seachInput
+searchInput.addEventListener("keyup", (event) => {
+    const inputValue = event.target.value.toLowerCase();
+    const gamesFiltrados = games.filter((juego) => {
+
+        const isMach = juego.name.toLowerCase().includes(inputValue);
+        return isMach;
+    })
+    //console.log(gamesFiltrados);
+    buildTable(gamesFiltrados);
+
+})
+
+categorySelect.addEventListener("change", (event) => {
+    const selectedCategory = event.target.value;
+
+    // Si la categoría seleccionada es "" (todas las categoría), no filtramos
+    if(selectedCategory === "all"){
+        buildTable(games);
+        return; // salimos de la función
+    }
+
+    const filteredGames = games.filter((juego) => {
+        if(juego.category.toLowerCase() === selectedCategory){
+            return true; // Coincide con la categoría seleccionada
+        }
+
+        return false;
+    })
+
+    buildTable(filteredGames);
+})
+
+sortBtns.forEach((btn) => {
+
+    btn.addEventListener("click", (event) => {
+
+        const dataOrder = event.currentTarget.dataset.order;
+
+        if(dataOrder === "reset") {
+            // Si el botón es de resetear, volvemos a mostrar todos los juegos
+            buildTable(games);
+            return; // Salimos de la función
+        }
+
+        console.log("Ordenar por:", dataOrder);
+
+        const sortedGames = games.toSorted((a, b) => {
+            if(dataOrder === "asc"){
+                return a.price - b.price; // Orden ascendente por precio
+            }
+            return b.price - a.price; // Orden ascendente por precio
+        })
+
+        buildTable(sortedGames);
+    })
+})
+
+function showDialog(id) {
+  // Buscar el juego por su id
+  const juego = games.find((jueguito) => {
+
+    return jueguito.id === id;
+
+  })
+
+  // Mostrar un modal de bootstrap con la información del juego
+
+  const dialog = document.getElementById("gameDetail");
+  const myModal = new bootstrap.Modal(dialog);
+
+  myModal.show();
+
+  console.log(dialog)
+
+  dialog.addEventListener("show.bs.modal", (event) => {
+    console.log("Modal abierto");
+    // event.preventDefault();
+    const title = dialog.getElementById("title");
+
+    console.log(title);
+
+    title.innerText = juego.name;
+  });
+}
