@@ -213,3 +213,52 @@ main {
     }
   }
 }
+
+
+.product-dialog {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  /* border: 2px solid royalblue; */
+
+  .image-container {
+    flex: 0 0 200px;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .details-container {
+    flex: 1;
+    padding: 1rem;
+
+    .category {
+      font-size: .75rem;
+      padding: .25rem .325rem;
+      background-color: crimson;
+      width: fit-content;
+      margin-bottom: 2rem;
+      text-transform: uppercase;
+      line-height: .75rem;
+    }
+
+    .price {
+      font-size: 1.5rem;
+      font-weight: 600;
+      text-align: end;
+      margin: 2rem 0;
+    }
+
+    p {
+      text-align: left;
+    }
+
+    .footer-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+    }
+  }
+}

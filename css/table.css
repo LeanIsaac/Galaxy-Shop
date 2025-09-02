@@ -20,6 +20,14 @@
 
     .cell-name {
         font-weight: bold;
+        span {
+            transition: color .3s ease;
+        }
+
+        span:hover {
+            cursor: pointer;
+            color: dodgerblue;
+        }
     }   
 
     .cell-price{
