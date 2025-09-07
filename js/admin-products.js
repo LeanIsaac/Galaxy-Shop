@@ -1,5 +1,7 @@
 import { formatDate } from "./date-utils.js";
-
+const API_URL = "https://68bb095184055bce63f0f63d.mockapi.io/";
+let games = [];
+/*
 const games = [
     {
         id: 1,
@@ -80,6 +82,8 @@ const games = [
         createdAt: "2023-10-05T12:00:00Z",
     }
 ];
+*/
+
 // Obtenemos elementos del DOM
 const gamesForm = document.getElementById("gamesForm");
 const tableBody = document.getElementById("tableBody");
@@ -89,37 +93,72 @@ const categorySelect = document.querySelector("#categoryFilter");
 
 const sortBtns = document.querySelectorAll("[data-order]");
 
-gamesForm.addEventListener("submit", (event) => {
-    //Lo primero que hacemos es prevenir el comportamiento por defecto del formulario
-    event.preventDefault();
-
-    const el = event.target.elements;
-    const newGame = {
-        id: Date.now(), // Generamos un ID único basado en la fecha actual
-        name: el.name.value,
-        image: el.image.value,
-        price: parseFloat(el.price.value), // Convertimos el precio a un número flotante
-        category: el.category.value,
-        description: el.description.value,
-        createdAt: new Date().toISOString() // Fecha actual en formato ISO
-    };
-
-    // Agregamos el nuevo juego al array de juegos
-    games.push(newGame);
-
-    Swal.fire({
-        icon:"success",
-        title: "Carga exitosa",
-        text: "El juego se ha agregado correctamente.",
-        position: "top-end",
-        toast: true,
-        showConfirmButton: false,
-        theme: "dark",
-        timer: 2500
-    })
-    // Vuelvo a iterear el array de juegos para actualizar la tabla
+//cuando cargue la pagina por primera vez llamo a la API para obtener los juegos
+async function getProducts() {
+  try {
+    const response = await axios.get(`${API_URL}/products`)
+    games = response.data;
+    console.log("Juegos obtenidos de la API: ", games);
     buildTable(games);
+    
+  }catch (error) {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "No se pudieron cargar los juegos. Inténtalo nuevamente más tarde.",
+    });
+  }
+}
+// Primera vez que se carga la pagina, cargo los productos
+getProducts();
 
+// !ESCUCHAR EL EVENTO SUBMIT DEL FORMULARIO
+gamesForm.addEventListener("submit", async(event) => {
+  try {
+
+  //Lo primero que hacemos es prevenir el comportamiento por defecto del formulario
+      event.preventDefault();
+
+      const el = event.target.elements;
+      const newGame = {
+          //id: Date.now(), // Generamos un ID único basado en la fecha actual
+          name: el.name.value,
+          image: el.image.value,
+          price: parseFloat(el.price.value), // Convertimos el precio a un número flotante
+          category: el.category.value,
+          description: el.description.value,
+          createdAt: new Date().toISOString() // Fecha actual en formato ISO
+      };
+      console.log("Nuevo juego a agregar: ", newGame);
+
+      //Vamos hacer una peticion a nuestro servidor en mockapi con un metodo POST
+      const response = await axios.post(`${API_URL}/products  `, newGame);
+
+      // Agregamos el nuevo juego al array de juegos
+      games.push(response.data);
+
+      Swal.fire({
+          icon:"success",
+          title: "Carga exitosa",
+          text: "El juego se ha agregado correctamente.",
+          position: "top-end",
+          toast: true,
+          showConfirmButton: false,
+          theme: "dark",
+          timer: 2500
+      })
+      // Vuelvo a iterear el array de juegos para actualizar la tabla
+      //buildTable(games);
+      getProducts();
+  }
+  catch (error) {
+    console.log("Se produjo un error al cargar el juego ",error);
+    Swal.fire({
+        icon:"error",
+        title: "Error",
+        text: "No se pudo agregar el juego. Inténtalo nuevamente."
+    })
+  }
 })
 
 function buildTable(arrayJuegos) {
@@ -161,25 +200,65 @@ function buildTable(arrayJuegos) {
     getDeleteGameBtns();
 }
 
-function deleteGame(id) {
-  const isConfirmed = confirm("¿Estás seguro de eliminar el juego?");
+ function deleteGame(id) 
+{
+    try {
+      //const isConfirmed = confirm("¿Estás seguro de eliminar el juego?");
+      Swal.fire({
+        title: "¿Estás seguro de eliminar el juego?",
+        text: "Esta acción no se puede deshacer.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#0000FF",
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar",
+        theme: "dark"
+      })
+      .then(async(result) => {
+        if(result.isConfirmed) {
+          //Hacer una peticion a la API para eliminar el juego
+          const response = await axios.delete(`${API_URL}/products/${id}`);
+          console.log("Juego eliminado: ", response.data);
 
-  if (isConfirmed) {
+          // Mostrar una notificación de éxito
+          Swal.fire({
+            icon:"success",
+            title: "Eliminación exitosa",
+            text: "El juego se ha eliminado correctamente.",
+            showConfirmButton: false,
+            theme: "dark",
+            timer: 1000
+          });
+            getProducts(); // Vuelvo a cargar los productos desde la API
+        }
+      //games = games.filter(juego => juego.id !== id ); // Retener solo los juegos que no coinciden con el ID a eliminar
+    });
+  }
+  catch (error) {
+      console.log("Se produjo un error al eliminar el juego ", error);
+      Swal.fire({
+        icon:"error",
+        title: "Error",
+        text: "No se pudo eliminar el juego."
+      });
+    }
+    // ESTÁ ALTERNATIVA SE USARIA PARA TRABAJAR CON DATOS LOCALES EN MI COMPU. Por Ejemplo, para un carrito de compras
     // Debería conocer el id del juego a eliminar
     // Vamos a obtener el índice del juego en el array
-    const indice = games.findIndex((juego) => {
-      return juego.id === id;
-    });
+    //const indice = games.findIndex((juego) => {
+    //  return juego.id === id;
+    //});
 
     // Eliminar el juego del array
-    games.splice(indice, 1);
+    //games.splice(indice, 1);
     
-    buildTable(games);
-  }
+    //buildTable(games);
 }
 
+
 // Llamamos a la función para construir la tabla al cargar el script
-buildTable(games); 
+// buildTable(games); 
 
 // #filtros
 // #cuando el user escriba en el seachInput
